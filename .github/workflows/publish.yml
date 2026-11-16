@@ -1,0 +1,42 @@
+name: Publish signed reader
+on:
+  push:
+    branches: [main]
+    paths: ['incoming/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: reader-publisher
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify publisher signature and archive
+        shell: bash
+        run: |
+          version=$(node verify-remote-feed.mjs update-signing.public.pem incoming/release.json incoming/release.sig incoming/TimeX-Remote-win-x86.zip)
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+      - name: Publish immutable archive
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "main-v$VERSION" incoming/TimeX-Remote-win-x86.zip --target "$GITHUB_SHA" --title "TimeX Remote $VERSION" --notes 'Signed generic reader. Existing branch settings are retained.'
+      - name: Publish main feed
+        shell: bash
+        run: |
+          cp incoming/release.json remote-update.json
+          cp incoming/release.sig remote-update.sig
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm incoming/TimeX-Remote-win-x86.zip incoming/release.json incoming/release.sig
+          git add remote-update.json remote-update.sig
+          git commit -m "Publish signed main reader $VERSION"
+          git push origin HEAD:main

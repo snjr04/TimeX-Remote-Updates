@@ -1,0 +1,10 @@
+import { readFileSync, statSync } from 'node:fs';
+import { createHash, verify } from 'node:crypto';
+const [keyPath,jsonPath,sigPath,zipPath]=process.argv.slice(2);
+const bytes=readFileSync(jsonPath);
+if(bytes.length>65536||!verify('RSA-SHA256',bytes,readFileSync(keyPath),Buffer.from(readFileSync(sigPath,'utf8').trim(),'base64')))throw Error('Release signature failed');
+const release=JSON.parse(bytes),info=release.Update;
+if(release.Schema!==1||release.Repository!=='snjr04/TimeX-Remote-Updates'||release.Branch!=='main'||info?.Channel!=='main'||!info.Available||!/^\d+\.\d+\.\d+$/.test(info.Version))throw Error('Wrong release identity');
+if(info.DownloadUrl!==`https://github.com/snjr04/TimeX-Remote-Updates/releases/download/main-v${info.Version}/TimeX-Remote-win-x86.zip`)throw Error('Wrong release URL');
+if(statSync(zipPath).size!==info.PackageSizeBytes||createHash('sha256').update(readFileSync(zipPath)).digest('hex').toUpperCase()!==info.PackageSha256.toUpperCase())throw Error('Package hash failed');
+console.log(info.Version);
