@@ -1,15 +1,15 @@
 {
-  "Branch": "main",
   "Repository": "snjr04/TimeX-Remote-Updates",
   "Update": {
+    "DownloadUrl": "https://github.com/snjr04/TimeX-Remote-Updates/releases/download/main-v1.1.34/TimeX-Remote-win-x86.zip",
+    "PackageSha256": "5A7C5AB1D226F0F74577BFD9BA9D2D9A429DEE5C2973A6D8F52F1CDB1292E862",
     "Available": true,
-    "Sha256": "16D1D5784308F305C0610FDB4676344EEC7E5413D48A9131078529A9FA5EACBD",
-    "PackageSha256": "8095D54721E944921340AE6FE001B9BAE62CBF99DAB483419DFF1580F7044222",
-    "DownloadUrl": "https://github.com/snjr04/TimeX-Remote-Updates/releases/download/main-v1.1.33/TimeX-Remote-win-x86.zip",
-    "PackageSizeBytes": 63593460,
-    "Version": "1.1.33",
-    "SizeBytes": 153669207,
-    "Channel": "main"
+    "Sha256": "439BE696E4A8A61225DD6BC55D417E92EA48B9E6E3D4D09134420DF10B80308F",
+    "Channel": "main",
+    "Version": "1.1.34",
+    "SizeBytes": 153722455,
+    "PackageSizeBytes": 63650567
   },
+  "Branch": "main",
   "Schema": 1
 }
